@@ -23,9 +23,6 @@ def EM(s_t_pairs, s_vocabulary, t_vocabulary, fn_after_iter = None):
                 lprobs[s][t] = counts_t_given_s[s][t]/total_s[s]
         if fn_after_iter:
             fn_after_iter(i, lprobs, log_likelihood)
-#        _print_lexicon_probs(lprobs)
-#        print(i, log_likelihood, math.exp(log_likelihood))
-#        print ()
         i += 1
     return lprobs
 
@@ -33,10 +30,8 @@ def EM(s_t_pairs, s_vocabulary, t_vocabulary, fn_after_iter = None):
 # read: the probability of 'book' given 'Haus' is 0.25
 def _initialize_lexicon_probabilities(source_vocabulary, target_vocabulary):
     p_init = 1./len(target_vocabulary)
-    lexicon_probabilities = collections.defaultdict(lambda: collections.defaultdict(int))
-    for s in source_vocabulary:
-        for t in target_vocabulary:
-            lexicon_probabilities[s][t] = p_init
+    lexicon_probabilities = collections.defaultdict(
+        lambda: collections.defaultdict(lambda: p_init))
     return lexicon_probabilities
 
 def _print_lexicon_probs(lprobs):
