@@ -5,10 +5,9 @@ Check the test function below for an example of how to use these helper function
 For test results, please use the official AER perl script.
 """
 
-def calculate_aer(predictions, path):
-    gold_sets = read_naacl_alignments(path)
+def calculate_AER(reference_alignments, predicted_alignments):
     metric = AERSufficientStatistics()
-    for gold, pred in zip(gold_sets, predictions):
+    for gold, pred in zip(reference_alignments, predicted_alignments):
         metric.update(sure=gold[0], probable=gold[1], predicted=pred)
     return metric.aer()
 
