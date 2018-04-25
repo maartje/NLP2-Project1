@@ -6,7 +6,7 @@ def EM(s_t_pairs, s_vocabulary, t_vocabulary,
         val_sentence_pairs = None, reference_alignments = None, fn_after_iter = None):
     lprobs = _initialize_lexicon_probabilities(s_vocabulary, t_vocabulary)
     i = 1
-    while i <= 20:
+    while i <= 2:
         # initialize
         log_likelihoods = []
         log_likelihood = 0
@@ -14,6 +14,7 @@ def EM(s_t_pairs, s_vocabulary, t_vocabulary,
         AERs = []
         counts_t_given_s = collections.defaultdict(lambda: collections.defaultdict(int))
         total_s = collections.defaultdict(int)
+#        sentence_count = 0
         for (s_sentence, t_sentence) in s_t_pairs:
             for t_word in t_sentence:
                 # normalization factor
@@ -23,13 +24,19 @@ def EM(s_t_pairs, s_vocabulary, t_vocabulary,
                     update = lprobs[s_word][t_word]/s_total_t
                     counts_t_given_s[s_word][t_word] += update
                     total_s[s_word] += update
-        for s in s_vocabulary:
-            for t in t_vocabulary:
+#            sentence_count += 1
+#            if (sentence_count % 100) == 0:
+#                print (f'{sentence_count} sentences processed')
+#        print ('all sentences processed')
+        for s in lprobs.keys():
+            for t in lprobs[s].keys():
                 lprobs[s][t] = counts_t_given_s[s][t]/total_s[s]
+#        print ('probabilities updated')
         if val_sentence_pairs and reference_alignments:
             predicted_alignments = align(lprobs, val_sentence_pairs)
             AER = aer.calculate_AER(reference_alignments, predicted_alignments)
             AERs.append(AER)
+#            print ('AER calculated')
         log_likelihoods.append(log_likelihood)
         if fn_after_iter:
             fn_after_iter(i, lprobs, log_likelihood, AER)
@@ -63,11 +70,13 @@ def _align_sentence_pair(lprobs, sentence_pair):
         best_align_prob = -1
         best_align_pos = -1
         for i, s_word in enumerate(s_sentence):
+            if s_word not in lprobs.keys() or t_word not in lprobs[s_word].keys():
+                continue # ignore unseen source and target words
             align_prob = lprobs[s_word][t_word] #p(t|s)
             if align_prob >= best_align_prob:
                 best_align_pos = i
                 best_align_prob = align_prob
-        if (best_align_pos != 0): # Leave out NULL-alignments
+        if (best_align_pos < 1): # Leave out NULL-alignments (and alignments between unseen words)
             best_alignment.add((j + 1, best_align_pos)) # word positions start at 1
     return best_alignment
 
