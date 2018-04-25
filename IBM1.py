@@ -2,11 +2,11 @@ import collections
 import math
 import aer
 
-def EM(s_t_pairs, s_vocabulary, t_vocabulary, 
+def EM(s_t_pairs, s_vocabulary, t_vocabulary, max_iterations = 10,
         val_sentence_pairs = None, reference_alignments = None, fn_after_iter = None):
     lprobs = _initialize_lexicon_probabilities(s_vocabulary, t_vocabulary)
     i = 1
-    while i <= 10:
+    while i <= max_iterations:
         # initialize
         log_likelihoods = []
         log_likelihood = 0
