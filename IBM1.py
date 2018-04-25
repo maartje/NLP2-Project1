@@ -6,7 +6,7 @@ def EM(s_t_pairs, s_vocabulary, t_vocabulary,
         val_sentence_pairs = None, reference_alignments = None, fn_after_iter = None):
     lprobs = _initialize_lexicon_probabilities(s_vocabulary, t_vocabulary)
     i = 1
-    while i <= 2:
+    while i <= 10:
         # initialize
         log_likelihoods = []
         log_likelihood = 0
@@ -76,7 +76,7 @@ def _align_sentence_pair(lprobs, sentence_pair):
             if align_prob >= best_align_prob:
                 best_align_pos = i
                 best_align_prob = align_prob
-        if (best_align_pos < 1): # Leave out NULL-alignments (and alignments between unseen words)
-            best_alignment.add((j + 1, best_align_pos)) # word positions start at 1
+        if (best_align_pos > 0): # Leave out NULL-alignments (and alignments between unseen words)
+            best_alignment.add((best_align_pos, j + 1)) # word positions start at 1
     return best_alignment
 
