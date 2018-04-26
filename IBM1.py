@@ -6,12 +6,12 @@ def EM(s_t_pairs, s_vocabulary, t_vocabulary, max_iterations = 10,
         val_sentence_pairs = None, reference_alignments = None, fn_after_iter = None):
     lprobs = _initialize_lexicon_probabilities(s_vocabulary, t_vocabulary)
     i = 1
+    log_likelihoods = []
+    AERs = []
     while i <= max_iterations:
         # initialize
-        log_likelihoods = []
         log_likelihood = 0
         AER = 0
-        AERs = []
         counts_t_given_s = collections.defaultdict(lambda: collections.defaultdict(int))
         total_s = collections.defaultdict(int)
 #        sentence_count = 0
