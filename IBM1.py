@@ -3,45 +3,58 @@ import math
 import aer
 
 def EM(s_t_pairs, s_vocabulary, t_vocabulary, max_iterations = 10,
-        val_sentence_pairs = None, reference_alignments = None, fn_after_iter = None):
+        val_sentence_pairs = None, reference_alignments = None, fn_debug = None):
     lprobs = _initialize_lexicon_probabilities(s_vocabulary, t_vocabulary)
-    i = 1
+    i = 0
     log_likelihoods = []
     AERs = []
-    while i <= max_iterations:
+    while i < max_iterations:
         # initialize
         log_likelihood = 0
         AER = 0
         counts_t_given_s = collections.defaultdict(lambda: collections.defaultdict(int))
         total_s = collections.defaultdict(int)
-#        sentence_count = 0
+
+        # calculate counts and log likelihood
         for (s_sentence, t_sentence) in s_t_pairs:
             for t_word in t_sentence:
                 # normalization factor
-                s_total_t = sum([lprobs[s_word][t_word] for s_word in s_sentence])
+                s_total_t = _likelihood_target_word(s_sentence, t_word, lprobs)
                 log_likelihood += math.log(s_total_t)
                 for s_word in s_sentence:
                     update = lprobs[s_word][t_word]/s_total_t
                     counts_t_given_s[s_word][t_word] += update
                     total_s[s_word] += update
-#            sentence_count += 1
-#            if (sentence_count % 100) == 0:
-#                print (f'{sentence_count} sentences processed')
-#        print ('all sentences processed')
-        for s in lprobs.keys():
-            for t in lprobs[s].keys():
-                lprobs[s][t] = counts_t_given_s[s][t]/total_s[s]
-#        print ('probabilities updated')
+        
+        # store log_likelihood and AER values
+        log_likelihoods.append(log_likelihood)
         if val_sentence_pairs and reference_alignments:
             predicted_alignments = align(lprobs, val_sentence_pairs)
             AER = aer.calculate_AER(reference_alignments, predicted_alignments)
             AERs.append(AER)
-#            print ('AER calculated')
-        log_likelihoods.append(log_likelihood)
-        if fn_after_iter:
-            fn_after_iter(i, lprobs, log_likelihood, AER)
+
+        # print debug info
+        if fn_debug:
+            fn_debug(i, lprobs, log_likelihood, AER)
+
+        # update probabilities
+        for s in lprobs.keys():
+            for t in lprobs[s].keys():
+                lprobs[s][t] = counts_t_given_s[s][t]/total_s[s]
+
+        # update iteration number
         i += 1
     return lprobs, log_likelihoods, AERs
+
+def log_likelihood_data(s_t_pairs, lprobs):
+    return sum([log_likelihood_sentence(s_t_pair, lprobs) for s_t_pair in s_t_pairs])
+
+def log_likelihood_sentence(s_t_pair, lprobs):
+    (s_sentence, t_sentence) = s_t_pair
+    return sum([ math.log(_likelihood_target_word(s_sentence, t_word, lprobs)) for t_word in t_sentence])
+
+def _likelihood_target_word(s_sentence, t_word, lprobs):
+    return sum([lprobs[s_word][t_word] for s_word in s_sentence])
 
 def align(lprobs, sentence_pairs):
     if isinstance(sentence_pairs, tuple):

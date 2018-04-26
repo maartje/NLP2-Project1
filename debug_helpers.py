@@ -6,7 +6,7 @@ import aer
 # EM iteration
 def print_likelihood(i, lprobs, log_likelihood, aer):
     likelihood = math.exp(log_likelihood)
-    if i == 1:
+    if i == 0:
         print('iteration  log_likelihood  likelihood  AER')
     print(f'{i} {log_likelihood:.3f} {likelihood:.3f} {aer:.5f}')
 
