@@ -161,8 +161,13 @@ corpus and we discuss their differences
 
 - stop/convergence criteria:
 1) based on training log likelihood
-2) best AER on validation set
+Relative log-likelihood convergence: 
+$\frac{ll_i - ll_{i-1}}{ll_{i-1}} < \epsilon$
+why relative? what epsilon?
 
+2) best AER on validation set
+Absolute criterion. why? what epsilon?
+$prevAER - AER < 0$
 
 \subsection{IBM 1 with Expectation Maximization}
 \label{IBM1}
