@@ -45,46 +45,55 @@
 \maketitle
 
 \begin{abstract}
+
+Scope: empirical evaluation of IBM 1 and IBM 2 models 
+
+Contributions: 
+- performance of the different models on test data 
+- analyses of the models and their performance
+
 \end{abstract}
 
 \section{Introduction}
 
-% translation models
+% Background: translation models
 - Statistical Machine Translation
 - Baysian split: $p(e|f) \propto p(e)*p(f|e)$ 
 - We focus on translation model $p(f|e)$
 
-% alignment models
+% Background: alignment models
 - alignment model: word pairs $(f,e)$ with the constraint that each french word 
 matches exactly one english word. 
 - Null word added to english sentence to align words in french that do
 not have an equivalent word in english (insertions)
 
-% IBM models
-- We focus on the alignment models IBM 1 and IBM 2
-- For IBM 1 we experiment with both EM and Variational Inference
-
-% IBM 1
+% Background: IBM 1
 - decomposition into: sentence length probability, alignment prob,
 translation prob
 (- alignment prob mixture component)
 - IBM 1: assume uniform alignment probability, 
 - train with EM (explain why) 
 
-% IBM 1 Variational Inference
-- Shortcomings of IBM 1 with EM, arguments for Bayesian approach
-- We use Dirichlet Prior and Variational Inference to meet these
-limitations
-
-% IBM 2
+% Background: IBM 2
 - Shortcomings of IBM 1 (assumption uniform alignments)
 - IBM 2 learn probabilities  $p(i,j,I,J)$
-
 - problem: too many parameters for small training sets
 - approach: jump probabilities \citep{Vogel}, 
 model probabilities as jumps from diagonal.
-
 - train with EM
+
+% Background: IBM 1 Variational Inference
+- Problem with maximum likelihood estimaion, arguments for Bayesian approach
+- Problem with posterior inference which motivates variational inference
+- We use Dirichlet Prior and Variational Inference to meet these
+limitations
+
+% Focus, Problem: comparison of IBM models
+- In this report we compare alignment models IBM 1, IBM 2
+and IB 1 with variational inference
+- We empirically evaluate how these models perform on a 
+corpus and we discuss their differences
+
 
 % outline
 - Section \ref{ExperimentalSetup}
@@ -92,29 +101,78 @@ model probabilities as jumps from diagonal.
 - Section \ref{IBM1_Dirichlet}
 - Section \ref{IBM2}
  
-\section{Experimental Setup}
+\section{Models}
+
+\subsection{IBM 1}
+- describe the model mathematically
+- mathematical assumptions
+- factorisation
+- parameterisation
+- limitations
+- parameter estimation: EM
+- inference techniques: viterbi alignment
+
+- cite some literature
+
+\subsection{IBM 2}
+- describe the model mathematically
+- mathematical assumptions
+- factorisation
+- parameterisation
+- limitations
+- parameter estimation: EM
+- inference techniques: viterbi alignment
+
+- cite some literature
+
+\subsection{IBM 1 with Variational Inference}
+
+- describe the model mathematically
+- mathematical assumptions
+- factorisation
+- parameterisation
+- limitations
+- parameter estimation: variational inference
+- inference techniques: viterbi alignment
+
+- cite some literature
+
+\paragraph{Jump Parameterization}
+- why: lot of parameters for small data set
+- math: formula
+- intuition: diagonal
+- literature: vogel
+
+
+\section{Experiments}
+\label{Experiments}
+
+\subsection{Experimental Setup}
 \label{ExperimentalSetup}
 
 - datasets: training, validation, test
+- numbers, languages, where does the data come from?
+
+- setup
+
+- Viterbi Alignment: how do we deal with unknown words in the validation/test set
 
 - metric: AER
 
-\section{IBM 1 with Expectation Maximization}
-\label{IBM1}
-
-\subsection{Model}
-- describe the model mathematically
-
-\subsection{Implementation}
-- describe how we use EM to train the model
-
-- describe stop/convergence criteria:
+- stop/convergence criteria:
 1) based on training log likelihood
 2) best AER on validation set
 
-- describe how to obtain Viterbi alignment
 
-\subsection{Results}
+\subsection{IBM 1 with Expectation Maximization}
+\label{IBM1}
+
+
+\paragraph{Training Conditions}
+
+- uniform initialisation
+
+\paragraph{Results}
 
 - Figure: training log-likelihood vs iteration
 
@@ -122,14 +180,77 @@ model probabilities as jumps from diagonal.
 
 - Figure/tabel: AER on test set using model selected based on AER and based on log-likelihood [remark: use official tool instead of python code]  
 
-\section{IBM 1 with Variational Inference}
+
+\subsection{IBM 1 with Variational Inference}
 \label{IBM1_Dirichlet}
 
-\section{IBM 2 with Expectation Maximization}
+
+\paragraph{Training Conditions}
+
+- uniform initialization
+
+- choice of hyper parameter
+
+\paragraph{Results}
+
+- Figure: training log-likelihood vs iteration
+
+- Figure: validation AER vs iteration
+
+- Figure/tabel: AER on test set using model selected based on AER and based on log-likelihood [remark: use official tool instead of python code]  
+
+
+\subsection{IBM 2 with Expectation Maximization}
 \label{IBM2}
 
-\section{Discussion and Future Work}
+\paragraph{Training Conditions}
 
-\section{Conclusion}
+- initialization
+Non-convex, thus local minimum, result depends on initialization
+1) uniform 
+2) random 3 times 
+3) staged, use result of model 1 run
+
+
+\paragraph{Results}
+
+- Figure: training log-likelihood vs iteration
+using different initializations
+a) uniform 
+b) random 3 times 
+c) staged 
+
+- Figure: validation AER vs iteration
+using different initializations
+a) uniform 
+b) random 3 times 
+c) staged 
+
+- Figure/tabel: AER on test set using model selected based on AER and based on log-likelihood [remark: use official tool instead of python code]  
+compare IBM 1 with IBM 2
+
+\subsection{Discussion}
+
+- (non)-convexity 
+- stability 
+- convergence.
+
+- complexity
+- qualitative insight: 
+i.e. distributions for rare words, frequent words and jump distribution
+
+
+\section{Conclusion and Future Work}
+
+- Future work: Dirichlet on IBM 2
+
+- Future work: IBM 2 with jumps for other languages with completely different word order,
+i.e. not most probability mass on diagonal
+
+- Comparison: Which model is the best, why?
+
+- contributions 
+
+- limitations
 
 \end{document}
