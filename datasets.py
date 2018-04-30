@@ -28,6 +28,15 @@ def example_data_null_words():
         ['a', 'small', 'house'], ['my', 'small', 'book']]
     return _process_sentences(german_sentences, english_sentences)
 
+def example_data_word_order():
+    german_sentences = [['Haus', 'das'], ['Buch', 'das'], ['Buch', 'ein'], 
+        ['Maus', 'ein'], ['Hund', 'das'], ['Welt', 'ein'], ['Boot', 'das'],
+        ['Brugge', 'ein']]
+    english_sentences = [['the', 'house'], ['the', 'book'], ['a', 'book'], 
+        ['a', 'mouse'], ['the', 'dog'], ['a', 'world'], ['the', 'boat'],
+        ['a', 'bridge']]
+    return _process_sentences(german_sentences, english_sentences)
+
 def validation_alignments():
     val_naacl_path = 'validation/dev.wa.nonullalign'
     reference_alignments = aer.read_naacl_alignments(val_naacl_path) 

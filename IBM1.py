@@ -22,7 +22,7 @@ def EM(s_t_pairs, s_vocabulary, t_vocabulary, max_iterations = 10,
                 s_total_t = _likelihood_target_word(s_sentence, t_word, lprobs)
                 log_likelihood += math.log(s_total_t)
                 for s_word in s_sentence:
-                    update = lprobs[s_word][t_word]/s_total_t
+                    update = lprobs[s_word][t_word]/(s_total_t * len(s_sentence))
                     counts_t_given_s[s_word][t_word] += update
                     total_s[s_word] += update
         
@@ -54,7 +54,7 @@ def log_likelihood_sentence(s_t_pair, lprobs):
     return sum([ math.log(_likelihood_target_word(s_sentence, t_word, lprobs)) for t_word in t_sentence])
 
 def _likelihood_target_word(s_sentence, t_word, lprobs):
-    return sum([lprobs[s_word][t_word] for s_word in s_sentence])
+    return sum([lprobs[s_word][t_word] for s_word in s_sentence]) / len(s_sentence)
 
 def align(lprobs, sentence_pairs):
     if isinstance(sentence_pairs, tuple):

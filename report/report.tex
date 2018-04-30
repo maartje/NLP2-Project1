@@ -1,0 +1,135 @@
+%
+% File acl2017.tex
+%
+%% Based on the style files for ACL-2015, with some improvements
+%%  taken from the NAACL-2016 style
+%% Based on the style files for ACL-2014, which were, in turn,
+%% based on ACL-2013, ACL-2012, ACL-2011, ACL-2010, ACL-IJCNLP-2009,
+%% EACL-2009, IJCNLP-2008...
+%% Based on the style files for EACL 2006 by 
+%%e.agirre@ehu.es or Sergi.Balari@uab.es
+%% and that of ACL 08 by Joakim Nivre and Noah Smith
+
+\documentclass[11pt,a4paper]{article}
+\usepackage[hyperref]{acl2017}
+\usepackage{times}
+\usepackage{latexsym}
+
+\usepackage{url}
+
+\aclfinalcopy % Uncomment this line for the final submission
+%\def\aclpaperid{***} %  Enter the acl Paper ID here
+
+%\setlength\titlebox{5cm}
+% You can expand the titlebox if you need extra space
+% to show all the authors. Please do not make the titlebox
+% smaller than 5cm (the original size); we will check this
+% in the camera-ready version and ask you to change it back.
+
+\newcommand\BibTeX{B{\sc ib}\TeX}
+
+\title{Machine Translation Models IBM 1 and IBM 2}
+
+\author{First Author \\
+  Maartje de Jonge \\
+  0194107 \\
+  {\tt maartjedejonge@gmail.com} \\\And
+  Second Author \\
+  Lina Murady \\
+  xxx \\
+  {\tt lina.murady@gmail.com} \\}
+
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\end{abstract}
+
+\section{Introduction}
+
+% translation models
+- Statistical Machine Translation
+- Baysian split: $p(e|f) \propto p(e)*p(f|e)$ 
+- We focus on translation model $p(f|e)$
+
+% alignment models
+- alignment model: word pairs $(f,e)$ with the constraint that each french word 
+matches exactly one english word. 
+- Null word added to english sentence to align words in french that do
+not have an equivalent word in english (insertions)
+
+% IBM models
+- We focus on the alignment models IBM 1 and IBM 2
+- For IBM 1 we experiment with both EM and Variational Inference
+
+% IBM 1
+- decomposition into: sentence length probability, alignment prob,
+translation prob
+(- alignment prob mixture component)
+- IBM 1: assume uniform alignment probability, 
+- train with EM (explain why) 
+
+% IBM 1 Variational Inference
+- Shortcomings of IBM 1 with EM, arguments for Bayesian approach
+- We use Dirichlet Prior and Variational Inference to meet these
+limitations
+
+% IBM 2
+- Shortcomings of IBM 1 (assumption uniform alignments)
+- IBM 2 learn probabilities  $p(i,j,I,J)$
+
+- problem: too many parameters for small training sets
+- approach: jump probabilities \citep{Vogel}, 
+model probabilities as jumps from diagonal.
+
+- train with EM
+
+% outline
+- Section \ref{ExperimentalSetup}
+- Section \ref{IBM1}
+- Section \ref{IBM1_Dirichlet}
+- Section \ref{IBM2}
+ 
+\section{Experimental Setup}
+\label{ExperimentalSetup}
+
+- datasets: training, validation, test
+
+- metric: AER
+
+\section{IBM 1 with Expectation Maximization}
+\label{IBM1}
+
+\subsection{Model}
+- describe the model mathematically
+
+\subsection{Implementation}
+- describe how we use EM to train the model
+
+- describe stop/convergence criteria:
+1) based on training log likelihood
+2) best AER on validation set
+
+- describe how to obtain Viterbi alignment
+
+\subsection{Results}
+
+- Figure: training log-likelihood vs iteration
+
+- Figure: validation AER vs iteration
+
+- Figure/tabel: AER on test set using model selected based on AER and based on log-likelihood [remark: use official tool instead of python code]  
+
+\section{IBM 1 with Variational Inference}
+\label{IBM1_Dirichlet}
+
+\section{IBM 2 with Expectation Maximization}
+\label{IBM2}
+
+\section{Discussion and Future Work}
+
+\section{Conclusion}
+
+\end{document}
