@@ -14,7 +14,8 @@ def figure_log_likelihood(log_lhoods, model_name):
     plt.yticks(fontsize=20)
     _ = plt.ylabel('LL-hood', fontsize=20, fontstyle = 'oblique')
     _ = plt.xlabel('iteration', fontsize=20, fontstyle = 'oblique')
-    _ = plt.savefig(f'{model_name}_llhood.png')
+    if model_name:
+         _ = plt.savefig(f'{model_name}_llhood.png')
     _ = plt.show()
     
 # save figure validation AER vs iteration
@@ -28,6 +29,7 @@ def figure_AER(AERs, model_name):
     plt.yticks(fontsize=20)
     _ = plt.ylabel('AER', fontsize=20, fontstyle = 'oblique')
     _ = plt.xlabel('iteration', fontsize=20, fontstyle = 'oblique')
-    _ = plt.savefig(f'{model_name}_AER.png')
+    if model_name:
+        _ = plt.savefig(f'{model_name}_AER.png')
     _ = plt.show()
 

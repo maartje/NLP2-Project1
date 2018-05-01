@@ -83,8 +83,8 @@ def _align_sentence_pair(lprobs, sentence_pair):
         best_align_prob = -1
         best_align_pos = -1
         for i, s_word in enumerate(s_sentence):
-            if s_word not in lprobs.keys() or t_word not in lprobs[s_word].keys():
-                continue # ignore unseen source and target words
+#            if s_word not in lprobs.keys() or t_word not in lprobs[s_word].keys():
+#                continue # ignore unseen source and target words
             align_prob = lprobs[s_word][t_word] #p(t|s)
             if align_prob >= best_align_prob:
                 best_align_pos = i

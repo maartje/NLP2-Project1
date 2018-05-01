@@ -1,14 +1,17 @@
 import math
 import IBM1 as ibm1
 import aer
+import datetime
+
 
 # Helper function to output likelihood and AER after each 
 # EM iteration
 def print_likelihood(i, lprobs, log_likelihood, aer):
     likelihood = math.exp(log_likelihood)
     if i == 0:
-        print('iteration  log_likelihood  likelihood  AER')
-    print(f'{i} {log_likelihood:.3f} {likelihood:.3f} {aer:.5f}')
+        print('iteration    log_likelihood    AER    time')
+    time_hm = datetime.datetime.now().strftime("%I:%M")
+    print(f'{i} {log_likelihood:.3f} {aer:.5f} {time_hm}')
 
 # Helper function to output lexical probabilities (after each 
 # EM iteration)
