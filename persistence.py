@@ -1,17 +1,17 @@
 import json
 
-def store_ibm1_model(lprobs, fname):
+def save_ibm1_model(lprobs, fname):
     json.dump(lprobs, open(fname,'w'))
 
 def load_ibm1_model(fname):
     lprobs = json.load(open(fname))
     return lprobs
 
-def store_iteration_results(scores, fname):
+def save(data, fname):
     with open(fname, "w") as file:
         file.write(str(scores))
 
-def load_iteration_results(fname):
+def load(fname):
     with open(fname, "r") as file:
-        scores = eval(file.readline())
-    return scores
+        data = eval(file.readline())
+    return data
