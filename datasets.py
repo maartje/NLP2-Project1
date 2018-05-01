@@ -22,10 +22,10 @@ def training_data():
     return s_t_pairs, s_vocabulary, t_vocabulary
 
 
-def validation_data():
+def validation_data(s_vocabulary, t_vocabulary):
     return _evaluation_data("validation/dev.e", "validation/dev.f", s_vocabulary, t_vocabulary)
 
-def test_data():
+def test_data(s_vocabulary, t_vocabulary):
     return _evaluation_data("testing/test/test.e", "testing/test/test.f", s_vocabulary, t_vocabulary)
 
 def _evaluation_data(s_path, t_path, s_vocabulary, t_vocabulary):
