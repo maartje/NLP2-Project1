@@ -13,8 +13,9 @@ def _find(f, seq):
     for item in seq:
         if f(item): 
             return item
+
 def has_converged_AER(prevAER, AER):
     return prevAER - AER < 0
 
 def has_converged_LLhood(prevLLhood, LLood):
-    return abs(LLood  - prevLLhood)/abs(prevLLhood) < 0.01
+    return abs(LLood  - prevLLhood)/abs(prevLLhood) < 0.001
