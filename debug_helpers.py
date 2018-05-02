@@ -4,7 +4,7 @@ import aer
 import datetime
 
 
-# Helper function to output likelihood and AER after each 
+# Helper function to output likelihood and AER after each
 # EM iteration
 def print_likelihood(i, lprobs, log_likelihood, aer):
     likelihood = math.exp(log_likelihood)
@@ -13,7 +13,13 @@ def print_likelihood(i, lprobs, log_likelihood, aer):
     time_hm = datetime.datetime.now().strftime("%I:%M")
     print(f'{i} {log_likelihood:.3f} {aer:.5f} {time_hm}')
 
-# Helper function to output lexical probabilities (after each 
+def print_ELBO(i, lprobs, elbo, aer):
+    if i == 0:
+        print('iteration    ELBO     AER    time')
+    time_hm = datetime.datetime.now().strftime("%I:%M")
+    print(f'{i} {elbo:.3f} {aer:.5f} {time_hm}')
+
+# Helper function to output lexical probabilities (after each
 # EM iteration)
 def print_lexicon_probs(i, lprobs, log_likelihood, aer):
     for s in lprobs.keys():
@@ -52,4 +58,3 @@ def print_alignment(sentence_pairs, reference_alignments, i):
     print()
     print('AER: ')
     print(AER)
-
