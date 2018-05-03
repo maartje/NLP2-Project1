@@ -4,7 +4,7 @@ import aer
 import warnings
 
 
-def get_lprob(s_word, t_word):
+def get_lprob(s_word, t_word, lprobs):
     return lprobs[s_word].get(t_word, 0) #prob 0 if s/t word do not co-occur in training
 
 def source_dependencies(s_sentence, t_word, t_pos, t_length, lprobs, jump_probs):
@@ -15,7 +15,7 @@ def source_dependencies(s_sentence, t_word, t_pos, t_length, lprobs, jump_probs)
     sum_jump_probs = sum(jump_probs)
     
     return [
-        (jump_probs[s_pos]/ sum_jump_probs) * get_lprob(s_word, t_word) 
+        (jump_probs[s_pos]/ sum_jump_probs) * get_lprob(s_word, t_word, lprobs) 
         for s_pos, s_word in enumerate(s_sentence)
     ]
 
