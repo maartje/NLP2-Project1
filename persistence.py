@@ -33,17 +33,17 @@ def get_preprocessed_sentence_pairs():
     path_to_validation = 'validation_pairs.txt'
     path_to_test = 'test_pairs.txt'
     if os.path.isfile(path_to_training) and os.path.isfile(path_to_validation) and os.path.isfile(path_to_test):
-        training_pairs = persistence.load(path_to_training)
-        validation_pairs = persistence.load(path_to_validation)
-        test_pairs = persistence.load(path_to_test)
+        training_pairs = load(path_to_training)
+        validation_pairs = load(path_to_validation)
+        test_pairs = load(path_to_test)
         return (training_pairs, validation_pairs, test_pairs)
         
     training_pairs, s_vocabulary, t_vocabulary = datasets.training_data()
     validation_pairs = datasets.validation_data(s_vocabulary, t_vocabulary)
     test_pairs = datasets.test_data(s_vocabulary, t_vocabulary)
-    persistence.save(training_pairs, path_to_training)
-    persistence.save(validation_pairs, path_to_validation)
-    persistence.save(test_pairs, path_to_test)
+    save(training_pairs, path_to_training)
+    save(validation_pairs, path_to_validation)
+    save(test_pairs, path_to_test)
     return (training_pairs, validation_pairs, test_pairs)
 
 
