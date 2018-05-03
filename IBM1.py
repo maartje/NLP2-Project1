@@ -1,10 +1,11 @@
 import collections
 import math
 import aer
+import initializations as inits
 
-def EM(s_t_pairs, s_vocabulary, t_vocabulary, max_iterations = 10,
+def EM(s_t_pairs, max_iterations = 10,
         val_sentence_pairs = None, reference_alignments = None, fn_debug = None):
-    lprobs = _initialize_lexicon_probabilities(s_vocabulary, t_vocabulary)
+    lprobs = inits.initialize_lprobs_uniform(s_t_pairs)
     i = 0
     log_likelihoods = []
     AERs = []
@@ -35,7 +36,13 @@ def EM(s_t_pairs, s_vocabulary, t_vocabulary, max_iterations = 10,
 
         # print debug info
         if fn_debug:
-            fn_debug(i, lprobs, log_likelihood, AER)
+            prev_llhood = None
+            prev_AER = None
+            if len(log_likelihoods) > 1:
+                prev_llhood = log_likelihoods[-2]
+            if len(AERs) > 1:
+                prev_AER = AERs[-2]
+            fn_debug(i, log_likelihood, AER, prev_llhood, prev_AER, lprobs)
 
         # update probabilities
         for s in lprobs.keys():
@@ -60,14 +67,6 @@ def align(lprobs, sentence_pairs):
     if isinstance(sentence_pairs, tuple):
         return _align_sentence_pair(lprobs, sentence_pairs)
     return [ _align_sentence_pair(lprobs, sentence_pair) for sentence_pair in sentence_pairs ]
-
-# {Hause: { book:0.25, ...}, ...}
-# read: the probability of 'book' given 'Haus' is 0.25
-def _initialize_lexicon_probabilities(source_vocabulary, target_vocabulary):
-    p_init = 1./len(target_vocabulary)
-    lexicon_probabilities = collections.defaultdict(
-        lambda: collections.defaultdict(lambda: p_init))
-    return lexicon_probabilities
 
 def _print_lexicon_probs(lprobs):
     for s in lprobs.keys():
