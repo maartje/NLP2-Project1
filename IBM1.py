@@ -85,11 +85,14 @@ def _align_sentence_pair(lprobs, sentence_pair):
         for i, s_word in enumerate(s_sentence):
 #            if s_word not in lprobs.keys() or t_word not in lprobs[s_word].keys():
 #                continue # ignore unseen source and target words
-            align_prob = lprobs[s_word][t_word] #p(t|s)
+            align_prob = get_lprob(s_word, t_word, lprobs) #p(t|s)
             if align_prob >= best_align_prob:
                 best_align_pos = i
                 best_align_prob = align_prob
         if (best_align_pos > 0): # Leave out NULL-alignments (and alignments between unseen words)
             best_alignment.add((best_align_pos, j + 1)) # word positions start at 1
     return best_alignment
+
+def get_lprob(s_word, t_word, lprobs):
+    return lprobs[s_word].get(t_word, 0) #prob 0 if s/t word do not co-occur in training
 
