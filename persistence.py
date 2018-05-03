@@ -1,4 +1,5 @@
 import json
+import os.path
 
 def save_ibm1_model(lprobs, fname):
     json.dump(lprobs, open(fname,'w'))
