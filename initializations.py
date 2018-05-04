@@ -39,7 +39,7 @@ def initialize_lprobs_randomly(s_t_pairs):
     return _initialize_lprobs(s_t_pairs, random.random)
 
 def initialize_lprobs_staged(s_t_pairs):
-    return persistence.load_ibm1_model('ibm1_iter_5.txt')
+    return persistence.load_ibm1_model('IBM1_output/params_AER_5.txt')
 
 def _initialize_lprobs(s_t_pairs, fn_set_prob):
 
