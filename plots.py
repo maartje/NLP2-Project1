@@ -3,7 +3,7 @@ from matplotlib.pyplot import figure, show
 from matplotlib.ticker import MaxNLocator
 
 # save figure training log likelihood vs iteration
-def figure_log_likelihood(log_lhoods, fname=None):
+def figure_log_likelihood(log_lhoods, fname=None, selected_iteration = None):
     ax = figure().gca()
     _ = plt.plot(log_lhoods)
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
@@ -14,12 +14,14 @@ def figure_log_likelihood(log_lhoods, fname=None):
     plt.yticks(fontsize=20)
     _ = plt.ylabel('LL-hood', fontsize=20, fontstyle = 'oblique')
     _ = plt.xlabel('iteration', fontsize=20, fontstyle = 'oblique')
+    if selected_iteration:
+        plt.scatter([selected_iteration],[log_lhoods[selected_iteration]], s=50)
     if fname:
          _ = plt.savefig(fname)
     _ = plt.show()
     
 # save figure validation AER vs iteration
-def figure_AER(AERs, fname = None):
+def figure_AER(AERs, fname = None, selected_iteration = None):
     ax = figure().gca()
     _ = plt.plot(AERs)
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
@@ -29,6 +31,8 @@ def figure_AER(AERs, fname = None):
     plt.yticks(fontsize=20)
     _ = plt.ylabel('AER', fontsize=20, fontstyle = 'oblique')
     _ = plt.xlabel('iteration', fontsize=20, fontstyle = 'oblique')
+    if selected_iteration:
+        plt.scatter([selected_iteration],[AERs[selected_iteration]], s=50)
     if fname:
         _ = plt.savefig(fname)
     _ = plt.show()
