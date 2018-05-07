@@ -11,7 +11,7 @@ import debug_helpers as debug
 import datasets
 
 def EM(s_t_pairs, s_vocabulary, t_vocabulary, max_iterations = 10,
-        val_sentence_pairs = None, reference_alignments = None,alpha=0.1, flag_ELBO=False,fn_debug = None):
+        val_sentence_pairs = None, reference_alignments = None,alpha=0.1, flag_ELBO=False,fn_debug = None, fn_after_E = None, mname='ibm1_var'):
     lprobs = _initialize_lexicon_probabilities(s_vocabulary, t_vocabulary) # lexical probabilities
     i = 0
     ELBOS = []
@@ -19,11 +19,14 @@ def EM(s_t_pairs, s_vocabulary, t_vocabulary, max_iterations = 10,
     AERs = []
     while i < max_iterations:
         AER = 0
+        log_likelihood = 0
+        elbo = 0
         lambda_f_e = collections.defaultdict(lambda: collections.defaultdict(lambda:alpha)) # lambda_{f|e}
         sum_lambda_f_e = collections.defaultdict(lambda:alpha) # sum f lambda_{f|e} -- basically sum over e
         for (s_sentence, t_sentence) in s_t_pairs:
             for t_word in t_sentence:
                 s_total_t = _likelihood_target_word(s_sentence, t_word, lprobs)
+                log_likelihood += math.log(s_total_t)
                 for s_word in s_sentence:
                     update = lprobs[s_word][t_word] / s_total_t #normalize
                     lambda_f_e[s_word][t_word] += update # M step
@@ -35,13 +38,24 @@ def EM(s_t_pairs, s_vocabulary, t_vocabulary, max_iterations = 10,
             AERs.append(AER)
 
         # compute ELBO if flag is set to true
+        # ELBO is computed by the log likelihood plus the Kullback divergence
         if flag_ELBO:
-            elbo = ELBO(lambda_f_e, sum_lambda_f_e, lprobs, alpha, s_t_pairs)
+            elbo = Kullback(lambda_f_e, sum_lambda_f_e, lprobs, alpha,s_vocabulary, t_vocabulary)
+            elbo += log_likelihood
 
         if fn_debug:
             fn_debug(i, lprobs, elbo, AER)
 
-        # fn_after_iter_ibm1(i, lprobs, elbo, AER)
+        if fn_after_E:
+            prev_llhood = None
+            prev_AER = None
+            if len(ELBOS) > 1:
+                prev_llhood = ELBOS[-2]
+            if len(AERs) > 1:
+                prev_AER = AERs[-2]
+            fn_after_E(i, elbo, AER, prev_llhood, prev_AER,
+                    lprobs, mname)
+
         ELBOS.append(elbo)
 
         # E step
@@ -54,26 +68,21 @@ def EM(s_t_pairs, s_vocabulary, t_vocabulary, max_iterations = 10,
 
     return lprobs, ELBOS , AERs
 
-def ELBO(lambda_f_e, sum_lambda_f_e,lprobs, alpha,s_t_pairs):
-    ''' Compute ELBO according to (4) and (5) of Computing the ELBO for
+def Kullback(lambda_f_e, sum_lambda_f_e,lprobs, alpha,s_vocabulary, t_vocabulary):
+    ''' Compute Kullback-divergence according to (5) of Computing the ELBO for
     Dirichlet from Schulz
     where lamda_f_e gamma, sum_lambda_f_e sum over gamma, lprobs theta and alpha '''
-    ELBO = 0
-    for (s_sentence, t_sentence) in s_t_pairs:
-        sum_ij = 0
-        sum_gamma = 0
-        for s_word in s_sentence:
-            sum_ij = sum_lambda_f_e[s_word]
-            for t_word in t_sentence:
-                gamma = lambda_f_e[s_word][t_word]
-                ELBO += (np.log(lprobs[s_word][t_word]) * (alpha - gamma)) + gammaln(gamma)
-                ELBO -= gammaln(alpha)
-                sum_gamma += gamma
-            ELBO += (alpha * len(t_sentence))
-            ELBO -= sum_lambda_f_e[s_word]
-        ELBO += digamma(sum_gamma)
-        ELBO -= digamma(sum_ij)
-    return ELBO
+    print('Computing Kullback')
+    KL = 0
+    for s_word in s_vocabulary:
+        for t_word in t_vocabulary:
+            gamma = lambda_f_e[s_word][t_word]
+            KL += (np.log(lprobs[s_word][t_word]) * (alpha - gamma)) + gammaln(gamma)
+            KL -= gammaln(alpha)
+        KL -= gammaln(sum_lambda_f_e[s_word])
+    KL += gammaln((alpha * len(t_vocabulary)))
+    print('Done Kullback')
+    return KL
 
 def fname_ibm1_var(i):
     return f'ibm1_var_iter_{i}.txt'
